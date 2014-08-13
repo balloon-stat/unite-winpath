@@ -32,13 +32,13 @@ let s:kind.action_table.remove = {
       \ 'is_selectable' : 1,
       \ }
 function! s:kind.action_table.remove.func(candidates)
-  if a:candidate.action__belong != "User"
-    echo "can remove candidate from PATH only User environment variable"
-    return
-  endif
   let cmd = s:path . '\modify_path.bat remove'
   let arg = ""
   for candidate in a:candidates
+    if candidate.action__belong != "User"
+      echo "can remove candidate from PATH only User environment variable"
+      return
+    endif
     let arg .= candidate.action__path . "^;"
   endfor
   silent! execute '!' cmd '"' . arg . '"'
