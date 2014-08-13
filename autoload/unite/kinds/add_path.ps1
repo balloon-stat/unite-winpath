@@ -1,3 +1,4 @@
+"add: " + $Args[0]
 $path = [Environment]::GetEnvironmentVariable('PATH', 'User')
 if (-not $path.EndsWith(';')) {
   $path += ';'

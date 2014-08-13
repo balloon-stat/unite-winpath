@@ -42,6 +42,7 @@ function! unite#sources#winpath#create_path_dict(path)
         \ 'kind' : 'path_fragment',
         \ 'action__path' : a:path,
         \ "action__dirctory" : a:path,
+        \ "action__belong" : 'User',
         \}
   return dict
 endfunction

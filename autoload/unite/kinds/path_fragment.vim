@@ -19,7 +19,7 @@ let s:kind.action_table.add = {
       \ }
 function! s:kind.action_table.add.func(candidate)
   if a:candidate.action__belong != "User"
-    echo "can add candidate to PATH only User environment variable"
+    echo "can not add candidate to PATH System environment variable"
     return
   endif
   let cmd = s:path . '\modify_path.bat add'
@@ -36,7 +36,7 @@ function! s:kind.action_table.remove.func(candidates)
   let arg = ""
   for candidate in a:candidates
     if candidate.action__belong != "User"
-      echo "can remove candidate from PATH only User environment variable"
+      echo "can not remove candidate from PATH System environment variable"
       return
     endif
     let arg .= candidate.action__path . "^;"
