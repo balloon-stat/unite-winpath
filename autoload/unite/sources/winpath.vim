@@ -80,7 +80,7 @@ function! s:_create_candidate(path, belong)
   endif
   return map(split(a:path, ';'), '{
         \ "word" : v:val,
-        \ "abbr" : a:belong . v:val,
+        \ "abbr" : prefix . v:val,
         \ "source" : "winpath",
         \ "kind" : "path_fragment",
         \ "action__path" : v:val,

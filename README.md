@@ -10,3 +10,4 @@ vimprocを必要とします。
 
 unite-source は winpath, winpath/add, winpath/remove が追加されます。  
 unite-kind は path_fragment が追加されます。  
+
