@@ -1,4 +1,4 @@
-"remove: " + $Args[0]
+"delete: " + $Args[0]
 $user_path = [Environment]::GetEnvironmentVariable('PATH', 'User')
 $paths = $Args[0].Split('^;')
 $users = $user_path.Split(';')

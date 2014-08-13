@@ -27,16 +27,16 @@ function! s:kind.action_table.add.func(candidate)
   silent! execute '!' cmd '"' . arg . '"'
 endfunction
 
-let s:kind.action_table.remove = {
-      \ 'description' : 'remove from PATH',
+let s:kind.action_table.delete = {
+      \ 'description' : 'delete from PATH',
       \ 'is_selectable' : 1,
       \ }
-function! s:kind.action_table.remove.func(candidates)
-  let cmd = s:path . '\modify_path.bat remove'
+function! s:kind.action_table.delete.func(candidates)
+  let cmd = s:path . '\modify_path.bat delete'
   let arg = ""
   for candidate in a:candidates
     if candidate.action__belong != "User"
-      echo "can not remove candidate from PATH System environment variable"
+      echo "can not delete candidate from PATH System environment variable"
       return
     endif
     let arg .= candidate.action__path . "^;"

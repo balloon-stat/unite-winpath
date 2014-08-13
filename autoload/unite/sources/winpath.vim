@@ -5,7 +5,7 @@ set cpo&vim
 let s:path = expand('<sfile>:p:h')
 
 function! unite#sources#winpath#define()
-  return [s:source_winpath, s:source_winpath_add, s:source_winpath_remove]
+  return [s:source_winpath, s:source_winpath_add]
 endfunction
 
 let s:source_winpath = {
@@ -15,7 +15,12 @@ let s:source_winpath = {
         \}
 
 function! s:source_winpath.gather_candidates(args, context)
-  return s:_gather_candidates(a:args, a:context)
+  let cmd = s:path . '\get_path.bat'
+  let resp = system(shellescape(cmd))
+  let res = split(substitute(resp, '[[:cntrl:]]', '', 'g'), ',')
+  let sys  = s:_create_candidate(res[0], "System")
+  let user = s:_create_candidate(res[1], "User")
+  return extend(user, sys)
 endfunction
 
 let s:source_winpath_add = {
@@ -27,11 +32,9 @@ let s:source_winpath_add = {
 
 function! s:source_winpath_add.change_candidates(args, context)
   let input = unite#util#expand(a:context.input)
-
   if input == ''
     return []
   endif
-
   return [unite#sources#winpath#create_path_dict(input)]
 endfunction
 
@@ -45,30 +48,6 @@ function! unite#sources#winpath#create_path_dict(path)
         \ "action__belong" : 'User',
         \}
   return dict
-endfunction
-
-let s:source_winpath_remove = {
-        \ 'name' : 'winpath/remove',
-        \ 'description' : 'candidates from PATH environment variable',
-        \ 'default_kind' : 'path_fragment',
-        \ 'default_action' : 'remove',
-        \ }
-
-function! s:source_winpath_remove.gather_candidates(args, context)
-  return s:_gather_candidates(a:args, a:context)
-endfunction
-
-function! s:_gather_candidates(args, context)
-  let cmd = s:path . '\get_path.bat'
-  let prc = vimproc#popen2(vimproc#shellescape(cmd))
-  let resp = ""
-  while !prc.stdout.eof
-    let resp .= prc.stdout.read()
-  endwhile
-  let res = split(substitute(resp, '[[:cntrl:]]', '', 'g'), ',')
-  let sys  = s:_create_candidate(res[0], "System")
-  let user = s:_create_candidate(res[1], "User")
-  return extend(user, sys)
 endfunction
 
 function! s:_create_candidate(path, belong)
