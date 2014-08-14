@@ -2,30 +2,27 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:path = expand('<sfile>:p:h')
-
 function! unite#sources#winpath#define()
   return [s:source_winpath, s:source_winpath_add]
 endfunction
 
 let s:source_winpath = {
         \ 'name' : 'winpath',
-        \ 'description' : 'candidates from PATH environment variable',
+        \ 'description' : 'candidates from PATH environment variable in Windows',
         \ 'default_kind' : 'path_fragment',
         \}
 
 function! s:source_winpath.gather_candidates(args, context)
-  let cmd = s:path . '\get_path.bat'
-  let resp = system(shellescape(cmd))
-  let res = split(substitute(resp, '[[:cntrl:]]', '', 'g'), ',')
-  let sys  = s:_create_candidate(res[0], "System")
-  let user = s:_create_candidate(res[1], "User")
+  let cmd_sys = "cmd /c \"powershell [Environment]::GetEnvironmentVariable('PATH', 'Machine')\""
+  let cmd_usr = "cmd /c \"powershell [Environment]::GetEnvironmentVariable('PATH', 'User')\""
+  let sys  = s:_create_candidate(system(cmd_sys), "System")
+  let user = s:_create_candidate(system(cmd_usr), "User")
   return extend(user, sys)
 endfunction
 
 let s:source_winpath_add = {
         \ 'name' : 'winpath/add',
-        \ 'description' : 'to add path candidates from input',
+        \ 'description' : 'to add path candidate from input',
         \ 'default_kind' : 'path_fragment',
         \ 'default_action' : 'add',
         \ }
@@ -51,6 +48,8 @@ function! unite#sources#winpath#create_path_dict(path)
 endfunction
 
 function! s:_create_candidate(path, belong)
+  let paths = substitute(substitute(a:path,
+        \       '\n', '', ''), ';$', '', '')
   if a:belong == "System"
     let prefix = "[System]  "
   elseif a:belong == "User"
@@ -58,7 +57,7 @@ function! s:_create_candidate(path, belong)
   else
     echoerr "_create_candidate:belong is wrong"
   endif
-  return map(split(a:path, ';'), '{
+  return map(split(paths, ';'), '{
         \ "word" : v:val,
         \ "abbr" : prefix . v:val,
         \ "source" : "winpath",
@@ -67,6 +66,14 @@ function! s:_create_candidate(path, belong)
         \ "action__dirctory" : v:val,
         \ "action__belong" : a:belong,
         \ }')
+endfunction
+
+function! unite#sources#winpath#edit_path_fragments(srcs)
+  call unite#kinds#path_fragment#do_action(a:srcs, 'edit')
+endfunction
+
+function! unite#sources#winpath#delete_path_fragments(srcs)
+  call unite#kinds#path_fragment#do_action(a:srcs, 'delete')
 endfunction
 
 let &cpo = s:save_cpo
