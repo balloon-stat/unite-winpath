@@ -42,6 +42,7 @@ function! unite#sources#winenvi#create_envi_dict(envi)
         \ 'kind' : 'envi',
         \ 'action__envi' : a:envi,
         \ "action__belong" : 'User',
+        \ "action__existence" : 0,
         \}
   return dict
 endfunction
@@ -63,6 +64,7 @@ function! s:_create_candidate(envi, belong)
         \ "kind" : "envi",
         \ "action__envi" : v:val,
         \ "action__belong" : a:belong,
+        \ "action__existence" : 1,
         \ }')
 endfunction
 

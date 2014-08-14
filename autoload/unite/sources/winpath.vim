@@ -43,6 +43,7 @@ function! unite#sources#winpath#create_path_dict(path)
         \ 'action__path' : a:path,
         \ "action__dirctory" : a:path,
         \ "action__belong" : 'User',
+        \ "action__existence" : 0,
         \}
   return dict
 endfunction
@@ -65,6 +66,7 @@ function! s:_create_candidate(path, belong)
         \ "action__path" : v:val,
         \ "action__dirctory" : v:val,
         \ "action__belong" : a:belong,
+        \ "action__existence" : 1,
         \ }')
 endfunction
 

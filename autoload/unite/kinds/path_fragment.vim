@@ -22,6 +22,10 @@ function! s:kind.action_table.add.func(candidate)
     echo "can not add candidate to System PATH"
     return
   endif
+  if a:candidate.action__existence
+    echo "this candidate is existence in PATH"
+    return
+  endif
   let cmd = s:path . '\modify_path.bat add'
   let arg = a:candidate.action__path
   silent! execute '!' cmd shellescape(arg)

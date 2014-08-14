@@ -21,6 +21,10 @@ function! s:kind.action_table.new.func(candidate)
     echo "can not create System environment variable"
     return
   endif
+  if a:candidate.action__existence
+    echo "this candidate is existence in environment variables"
+    return
+  endif
   let envi = split(a:candidate.action__envi, '::')
   call s:_set_env(envi[0], envi[1])
 endfunction
