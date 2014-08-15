@@ -26,7 +26,7 @@ function! s:kind.action_table.add.func(candidate)
     echo "this candidate is existence in PATH"
     return
   endif
-  let cmd = s:path . '\modify_path.bat add'
+  let cmd = 'powershell -ExecutionPolicy RemoteSigned -File ' . s:path . '\add_path.ps1'
   let arg = a:candidate.action__path
   silent! execute '!' cmd shellescape(arg)
 endfunction
@@ -57,10 +57,10 @@ endfunction
 
 function! s:_write_variable()
   setlocal nomodified
-  let cmd_del = s:path . '\modify_path.bat delete'
+  let cmd_del = 'powershell -ExecutionPolicy RemoteSigned -File ' . s:path . '\delete_path.ps1'
   let arg_del = b:edit_path . ";"
   silent! execute '!' cmd_del shellescape(arg_del)
-  let cmd_add = s:path . '\modify_path.bat add'
+  let cmd_del = 'powershell -ExecutionPolicy RemoteSigned -File ' . s:path . '\add_path.ps1'
   let arg_add = getline(1)
   silent! execute '!' cmd_add shellescape(arg_add)
   let b:edit_path = arg_add
@@ -72,7 +72,7 @@ let s:kind.action_table.delete = {
       \ 'is_selectable' : 1,
       \ }
 function! s:kind.action_table.delete.func(candidates)
-  let cmd = s:path . '\modify_path.bat delete'
+  let cmd = 'powershell -ExecutionPolicy RemoteSigned -File ' . s:path . '\delete_path.ps1'
   let arg = ""
   for candidate in a:candidates
     if candidate.action__belong != "User"
